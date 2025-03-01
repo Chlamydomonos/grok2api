@@ -52,6 +52,8 @@ CONFIG = {
     "ISSHOW_SEARCH_RESULTS": os.getenv("ISSHOW_SEARCH_RESULTS", "true").lower() == "true"
 }
 
+PROXY_URL = os.getenv('HTTP_PROXY_URL', 'http://127.0.0.1:7890')
+
 class Logger:
     def __init__(self, level="INFO", colorize=True, format=None):
         # 移除默认的日志处理器
@@ -496,6 +498,7 @@ class GrokApiClient:
                 url, 
                 headers=headers,
                 data=json.dumps(upload_data),
+                proxies={'http': PROXY_URL, 'https': PROXY_URL}
             )
             
             if response.status_code != 200:
@@ -1045,7 +1048,8 @@ async def chat_completions():
                         f"{CONFIG['API']['BASE_URL']}/rest/app-chat/conversations/new",
                         headers=headers,
                         data=json.dumps(request_payload),
-                        stream=True
+                        stream=True,
+                        proxies={'http': PROXY_URL, 'https': PROXY_URL}
                     )
                     
                     if response.status_code == 200:
